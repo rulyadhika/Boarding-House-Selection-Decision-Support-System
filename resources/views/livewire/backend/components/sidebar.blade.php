@@ -24,7 +24,7 @@
        Kelola Data
     </div>
 
-    <li class="nav-item {{ request()->is('/admin/kost')?'active':'' }}">
+    <li class="nav-item {{ request()->is('admin/kost')?'active':'' }}">
         <a class="nav-link" href="{{ route('admin.kost') }}">
             <i class="fas fa-home"></i>
             <span>Data Kost</span></a>

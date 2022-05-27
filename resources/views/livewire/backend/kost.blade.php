@@ -31,8 +31,13 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>
-                                        <img src="{{ asset('src/images/kost/' . $data->thumbnail) }}"
-                                            class="img-fluid" alt="">
+                                        @if (Storage::disk('public')->exists('src/images/kost/' . $data->thumbnail))
+                                            <img src="{{ asset('src/images/kost/' . $data->thumbnail) }}"
+                                                class="img-fluid" alt="">
+                                        @else
+                                            <img src="{{ asset('src/images/kost/default.jpg') }}"
+                                                class="img-fluid" alt="">
+                                        @endif
                                     </td>
                                     <td>{{ $data->nama_kost }}</td>
                                     <td>{{ $data->category->nama_kategori }}</td>
@@ -75,8 +80,12 @@
                     <div class="row">
                         <div class="col-lg-4 mb-2 mb-lg-0">
                             <h6 class="d-block font-weight-bold">Foto Kost</h6>
-                            <img src="{{ asset('src/images/kost/' . $thumbnail) }}" alt="" id="img-preview"
-                                class="img-fluid">
+                            @if ($fotoKost)
+                                <img src="{{ $fotoKost->temporaryUrl() }}" alt="" class="img-fluid">
+                            @else
+                                <img src="{{ asset('src/images/kost/' . $thumbnail) }}" alt="" id="img-preview"
+                                    class="img-fluid">
+                            @endif
 
                             <div class="input-group @error('fotoKost') is-invalid @enderror mt-2">
                                 <div class="custom-file" wire:ignore>
@@ -86,7 +95,7 @@
                                         aria-describedby="inputGroupFileAddon01">Choose file</label>
                                 </div>
                             </div>
-                            <small>*Ukuran file maksimal 1MB. Ekstensi yang diperbolehkan csv. </small>
+                            <small>*Ukuran file maksimal 1MB. Ekstensi yang diperbolehkan jpg/jpeg/png. </small>
                             @error('fotoKost')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -97,7 +106,8 @@
                             <div class="form-group">
                                 <label for="statusData">Status Data</label>
                                 <select id="statusData" class="form-control @error('statusData') is-invalid @enderror"
-                                    wire:mode.defer="statusData">
+                                    wire:model.defer="statusData">
+                                    <option value="">-- Pilih Status Data --</option>
                                     <option value="ditampilkan">Ditampilkan</option>
                                     <option value="diarsipkan">Diarsipkan</option>
                                 </select>
@@ -112,6 +122,21 @@
                                 <input type="text" class="form-control @error('namaKost') is-invalid @enderror"
                                     wire:model.defer="namaKost" id="namaKost">
                                 @error('namaKost')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label for="kategoriKost">Jenis Kost</label>
+                                <select class="form-control @error('kategoriKost') is-invalid @enderror"
+                                    wire:model.defer="kategoriKost" id="kategoriKost" wire:model.defer="statusData">
+                                    <option value="">-- Pilih Jenis Kost --</option>
+                                    @foreach ($kostCategories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->nama_kategori }}</option>
+                                    @endforeach
+                                </select>
+                                @error('kategoriKost')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -193,7 +218,6 @@
 </div>
 
 @push('pageScript')
-    <script src="{{ asset('src/js/image-preview.js') }}"></script>
     <script>
         $("#kost-table").dataTable({
             "language": {
@@ -226,13 +250,7 @@
         });
     </script>
     <script>
-        const resetImageInput = () => {
-            $("#imageInput").val('');
-            $(".custom-file-label").text('Choose file');
-        }
-
         $(".add-kost-btn").on("click", function() {
-            resetImageInput();
             Livewire.emit('resetKostInput');
 
             $("#kostModalLabel").text("Tambah Data Kost");
@@ -243,7 +261,7 @@
         });
 
         $("#kost-wrapper").on('click', '.edit-kost-btn', function() {
-            resetImageInput();
+            Livewire.emit('resetKostInput');
 
             let dataId = $(this).data('id');
             $("#kostModalLabel").text("Ubah Data Kost");

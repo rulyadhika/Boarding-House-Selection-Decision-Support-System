@@ -19,18 +19,6 @@ class Kost extends Model
         return $this->belongsTo(KostCategory::class,'id_kategori');
     }
 
-    public function price(){
-        return $this->belongsTo(CriteriaPrice::class,'kriteria_biaya');
-    }
-
-    public function distance(){
-        return $this->belongsTo(CriteriaDistance::class,'kriteria_jarak');
-    }
-
-    public function roomSize(){
-        return $this->belongsTo(CriteriaRoomSize::class,'kriteria_luas_kamar');
-    }
-
     public function facility(){
         return $this->belongsTo(CriteriaFacility::class,'kriteria_fasilitas');
     }

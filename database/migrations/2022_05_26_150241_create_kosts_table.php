@@ -18,9 +18,9 @@ return new class extends Migration
             $table->foreignId('id_kategori')->constrained('kost_categories');
             $table->string('nama_kost');
             $table->string('alamat_kost');
-            $table->foreignId('kriteria_biaya')->constrained('criteria_prices');
-            $table->foreignId('kriteria_jarak')->constrained('criteria_distances');
-            $table->foreignId('kriteria_luas_kamar')->constrained('criteria_room_sizes');
+            $table->integer('biaya');
+            $table->integer('jarak');
+            $table->integer('luas_kamar');
             $table->foreignId('kriteria_fasilitas')->constrained('criteria_facilities');
             $table->timestamps();
         });

@@ -36,13 +36,13 @@
                             {{ $data['kost']['nama_kost'] }}
                         </td>
                         <td>
-                            {{ $data['kost']['price']['nama_kriteria'] }}
+                            {{ $data['kost']['biaya'] }}
                         </td>
                         <td>
-                            {{ $data['kost']['distance']['nama_kriteria'] }}
+                            {{ $data['kost']['jarak'] }}
                         </td>
                         <td>
-                            {{ $data['kost']['room_size']['nama_kriteria'] }}
+                            {{ $data['kost']['luas_kamar'] }}
                         </td>
                         <td>
                             {{ $data['kost']['facility']['nama_kriteria'] }}

@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('criteria_distances', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_kriteria');
+            $table->integer('batas_atas')->comment('meter');
+            $table->integer('batas_bawah')->comment('meter');
             $table->integer('bobot');
             $table->timestamps();
         });

@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('criteria_room_sizes', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_kriteria');
+            $table->integer('batas_atas')->comment('meter persegi');
+            $table->integer('batas_bawah')->comment('meter persegi');
             $table->integer('bobot');
             $table->timestamps();
         });

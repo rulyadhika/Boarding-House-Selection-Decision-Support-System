@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('criteria_prices', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_kriteria');
+            $table->integer('batas_atas');
+            $table->integer('batas_bawah');
             $table->integer('bobot');
             $table->timestamps();
         });

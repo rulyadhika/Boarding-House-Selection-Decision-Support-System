@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\CriteriaRoomSize;
 use App\Models\Kost;
 use App\Models\KostCategory;
 use App\Models\KostMatrix;
@@ -35,14 +36,14 @@ class RankData extends Component
     public function calculate()
     {
         $this->criteriaWeight = collect([
-            'biaya' => $this->priceCriteriaWeight, 
-            'jarak' => $this->distanceCriteriaWeight, 
-            'luas_kamar' => $this->roomSizeCriteriaWeight, 
+            'biaya' => $this->priceCriteriaWeight,
+            'jarak' => $this->distanceCriteriaWeight,
+            'luas_kamar' => $this->roomSizeCriteriaWeight,
             'fasilitas' => $this->facilityCriteriaWeight
         ]);
 
         // cost = biaya, jarak
-        $this->kostMatrix = KostMatrix::with(['kost.category', 'kost.price', 'kost.distance', 'kost.facility', 'kost.roomSize'])
+        $this->kostMatrix = KostMatrix::with(['kost.category', 'kost.facility'])
             ->whereHas('kost.category', function ($query) {
                 $query->where('id', $this->selectedCategory);
             })->get();

@@ -40,71 +40,87 @@ class DatabaseSeeder extends Seeder
             ]
         ]);
 
+        // batas bawah batas atas
         CriteriaPrice::insert([
             [
-                'nama_kriteria' => '< Rp. 250.000',
+                'batas_atas' => 250000,
+                'batas_bawah' => 0,
                 'bobot' => 1,
             ],
             [
-                'nama_kriteria' => 'Rp. 250.000 <= x < Rp. 350.000',
+                'batas_atas' => 350000,
+                'batas_bawah' => 250000,
                 'bobot' => 2,
             ],
             [
-                'nama_kriteria' => 'Rp. 350.000 <= x < Rp. 500.000',
+                'batas_atas' => 500000,
+                'batas_bawah' => 350000,
                 'bobot' => 3,
             ],
             [
-                'nama_kriteria' => 'Rp. 500.000 <=  x < Rp. 650.000',
+                'batas_atas' => 650000,
+                'batas_bawah' => 500000,
                 'bobot' => 4,
             ],
             [
-                'nama_kriteria' => '>= Rp. 650.000',
+                'batas_atas' => 1000000,
+                'batas_bawah' => 650000,
                 'bobot' => 5,
             ],
         ]);
 
         CriteriaDistance::insert([
             [
-                'nama_kriteria' => '<= 100 m',
+                'batas_atas' => 100,
+                'batas_bawah' => 0,
                 'bobot' => 1,
             ],
             [
-                'nama_kriteria' => '100 m < x <= 250 m',
+                'batas_atas' => 250,
+                'batas_bawah' => 100,
                 'bobot' => 2,
             ],
             [
-                'nama_kriteria' => '250 m < x < 500 m',
+                'batas_atas' => 500,
+                'batas_bawah' => 250,
                 'bobot' => 3,
             ],
             [
-                'nama_kriteria' => '500 m < x < 1 km',
+                'batas_atas' => 1000,
+                'batas_bawah' => 500,
                 'bobot' => 4,
             ],
             [
-                'nama_kriteria' => '>= 1 km',
+                'batas_atas' => 5000,
+                'batas_bawah' => 1000,
                 'bobot' => 5,
             ],
         ]);
 
         CriteriaRoomSize::insert([
             [
-                'nama_kriteria' => '3 x 4 m',
+                'batas_atas' => 9,  //3x3
+                'batas_bawah' => 6, //2x3
                 'bobot' => 1,
             ],
             [
-                'nama_kriteria' => '4 x 4 m',
+                'batas_atas' => 12,  //4x3
+                'batas_bawah' => 9, //3x3
                 'bobot' => 2,
             ],
             [
-                'nama_kriteria' => '4 x 5 m',
+                'batas_atas' => 16,  //4x4
+                'batas_bawah' => 12, //4x3
                 'bobot' => 3,
             ],
             [
-                'nama_kriteria' => '5 x 5 m',
+                'batas_atas' => 20,  //5x4
+                'batas_bawah' => 16, //4x4
                 'bobot' => 4,
             ],
             [
-                'nama_kriteria' => '5 x 6 m',
+                'batas_atas' => 50,  //~
+                'batas_bawah' => 20, //4x5
                 'bobot' => 5,
             ],
         ]);
@@ -137,9 +153,9 @@ class DatabaseSeeder extends Seeder
 
             KostMatrix::create([
                 'id_kost' => $kost->id,
-                'biaya' => CriteriaPrice::find($kost->kriteria_biaya)->bobot,
-                'jarak' => CriteriaDistance::find($kost->kriteria_jarak)->bobot,
-                'luas_kamar' => CriteriaRoomSize::find($kost->kriteria_luas_kamar)->bobot,
+                'biaya' => CriteriaPrice::where('batas_bawah','<',$kost->biaya)->where('batas_atas','>=',$kost->biaya)->first()->bobot,
+                'jarak' => CriteriaDistance::where('batas_bawah','<',$kost->jarak)->where('batas_atas','>=',$kost->jarak)->first()->bobot,
+                'luas_kamar' => CriteriaRoomSize::where('batas_bawah','<',$kost->luas_kamar)->where('batas_atas','>=',$kost->luas_kamar)->first()->bobot,
                 'fasilitas' => CriteriaFacility::find($kost->kriteria_fasilitas)->bobot,
             ]);
         }

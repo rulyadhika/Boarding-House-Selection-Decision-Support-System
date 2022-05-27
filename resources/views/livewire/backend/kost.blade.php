@@ -11,55 +11,62 @@
                             class="fa fa-plus mr-1"></i> Tambah Data</button>
                 </div>
                 <!-- Card Body -->
-                <div class="card-body" id="kost-wrapper" wire:ignore>
-                    <table id="kost-table" class="display table" style="width:100%">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th>No</th>
-                                <th style="max-width: 100px;">Foto</th>
-                                <th>Nama Kost</th>
-                                <th>Jenis Kost</th>
-                                <th>Biaya</th>
-                                <th>Jarak</th>
-                                <th>Luas</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($dataKost as $data)
+                <div class="card-body" id="kost-wrapper">
+                    <div class="table-responsive">
+                        <table id="kost-table" class="display table" style="width:100%">
+                            <thead class="thead-dark">
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>
-                                        @if (Storage::disk('public')->exists('src/images/kost/' . $data->thumbnail))
-                                            <img src="{{ asset('src/images/kost/' . $data->thumbnail) }}"
-                                                class="img-fluid" alt="">
-                                        @else
-                                            <img src="{{ asset('src/images/kost/default.jpg') }}"
-                                                class="img-fluid" alt="">
-                                        @endif
-                                    </td>
-                                    <td>{{ $data->nama_kost }}</td>
-                                    <td>{{ $data->category->nama_kategori }}</td>
-                                    <td>{{ $data->biaya }}</td>
-                                    <td>{{ $data->jarak }}</td>
-                                    <td>{{ $data->luas_kamar }}</td>
-                                    <td class="text-{{ $data->status == 'ditampilkan' ? 'success' : 'danger' }}">
-                                        {{ Str::headline($data->status) }}</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary edit-kost-btn"
-                                            data-id="{{ $data->id }}" data-toggle="modal" data-target="#kostModal">
-                                            <i class="fa fa-pencil-alt"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-danger delete-kost-btn"
-                                            data-id="{{ $data->id }}">
-                                            <i class="fa fa-times"></i>
-                                        </button>
-                                    </td>
+                                    <th>No</th>
+                                    <th>Foto</th>
+                                    <th>Nama Kost</th>
+                                    <th>Jenis Kost</th>
+                                    <th>Biaya</th>
+                                    <th>Jarak</th>
+                                    <th>Luas</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($dataKost as $data)
+                                    <tr>
+                                        <td>{{ $page * $amountData + $loop->iteration - $amountData }}</td>
+                                        <td style="max-width: 100px;">
+                                            @if (Storage::disk('public')->exists('src/images/kost/' . $data->thumbnail))
+                                                <img src="{{ asset('src/images/kost/' . $data->thumbnail) }}"
+                                                    class="img-fluid" alt="">
+                                            @else
+                                                <img src="{{ asset('src/images/kost/default.jpg') }}"
+                                                    class="img-fluid" alt="">
+                                            @endif
+                                        </td>
+                                        <td>{{ $data->nama_kost }}</td>
+                                        <td>{{ $data->category->nama_kategori }}</td>
+                                        <td>{{ $data->biaya }}</td>
+                                        <td>{{ $data->jarak }}</td>
+                                        <td>{{ $data->luas_kamar }}</td>
+                                        <td class="text-{{ $data->status == 'ditampilkan' ? 'success' : 'danger' }}">
+                                            {{ Str::headline($data->status) }}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary edit-kost-btn"
+                                                data-id="{{ $data->id }}" data-toggle="modal" data-target="#kostModal">
+                                                <i class="fa fa-pencil-alt"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger delete-kost-btn"
+                                                data-id="{{ $data->id }}">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        {{ $dataKost->links() }}
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -208,7 +215,7 @@
                         <i class="fa fa-save mr-1"></i>
                         Simpan</button>
 
-                    <button type="button" class="btn btn-sm btn-primary" wire:click="" id="update-kost-btn">
+                    <button type="button" class="btn btn-sm btn-primary" wire:click="updateKostData" id="update-kost-btn">
                         <i class="fa fa-save mr-1"></i>
                         Perbarui</button>
                 </div>
@@ -218,27 +225,6 @@
 </div>
 
 @push('pageScript')
-    <script>
-        $("#kost-table").dataTable({
-            "language": {
-                "emptyTable": "Belum ada data yang tersedia",
-                "info": "Menampilkan _START_ s/d _END_ dari _TOTAL_ data",
-                "infoEmpty": "Belum ada data yang tersedia",
-                "infoFiltered": "",
-                "search": "Pencarian",
-                "lengthMenu": "Menampilkan _MENU_ data",
-                "zeroRecords": "Maaf, Data tidak tersedia.",
-                "paginate": {
-                    "first": "Pertama",
-                    "last": "Terakhir",
-                    "next": "Berikutnya",
-                    "previous": "Sebelumnya"
-                },
-                "searchPlaceholder": "Masukan kata kunci"
-            },
-            scrollX: true
-        });
-    </script>
     <script>
         Livewire.on('dataKostModified', function(response) {
             dispatchSuccessDialog({

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('kost_matrices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_kost')->constrained('kosts');
+            $table->foreignId('id_kost')->constrained('kosts')->cascadeOnDelete();
             $table->integer('biaya');
             $table->integer('jarak');
             $table->integer('luas_kamar');

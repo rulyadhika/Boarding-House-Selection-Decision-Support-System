@@ -21,16 +21,13 @@
 
     <!-- Heading -->
     <div class="sidebar-heading">
-       cek
+       Kelola Data
     </div>
 
-    <li class="nav-item ">
-        <a class="nav-link" href="">
-            <i class="fa fa-times"></i>
-            <span>Data Training</span></a>
-        <a class="nav-link" href="">
-            <i class="fa fa-times"></i>
-            <span>Cari Tahu</span></a>
+    <li class="nav-item {{ request()->is('/admin/kost')?'active':'' }}">
+        <a class="nav-link" href="{{ route('admin.kost') }}">
+            <i class="fas fa-home"></i>
+            <span>Data Kost</span></a>
     </li>
 
 

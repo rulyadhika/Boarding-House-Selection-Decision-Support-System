@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Livewire\Backend\Dashboard;
+use App\Http\Livewire\Backend\Kost;
 use App\Http\Livewire\Frontend\RankData;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'admin'], function () {
     Route::get('/', Dashboard::class);
+    Route::get('/kost', Kost::class)->name('admin.kost');
 });
 
 Route::get('/', RankData::class);

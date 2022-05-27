@@ -22,6 +22,8 @@ return new class extends Migration
             $table->integer('jarak');
             $table->integer('luas_kamar');
             $table->foreignId('kriteria_fasilitas')->constrained('criteria_facilities');
+            $table->string('thumbnail');
+            $table->enum('status',['diarsipkan','ditampilkan'])->default('ditampilkan');
             $table->timestamps();
         });
     }

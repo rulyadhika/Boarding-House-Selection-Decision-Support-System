@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\CriteriaDistance;
+use App\Models\CriteriaPrice;
 use App\Models\CriteriaRoomSize;
 use App\Models\Kost;
 use App\Models\KostCategory;
@@ -12,10 +14,16 @@ class RankData extends Component
 {
     public $kostMatrix;
     public $categories;
+    public $priceCriteriaRange;
+    public $distanceCriteriaRange;
+    public $roomSizeCriteriaRange;
 
     public $normalizationMatrix;
     public $rankedData = [];
-    public $criteriaWeight;
+
+    public $selectedPriceCriteria;
+    public $selectedDistanceCriteria;
+    public $selectedRoomSizeCriteria;
 
     public $selectedCategory;
     public $priceCriteriaWeight;
@@ -26,6 +34,9 @@ class RankData extends Component
     public function mount()
     {
         $this->categories = KostCategory::all();
+        $this->priceCriteriaRange = CriteriaPrice::all();
+        $this->distanceCriteriaRange = CriteriaDistance::all();
+        $this->roomSizeCriteriaRange = CriteriaRoomSize::all();
     }
 
     public function render()
@@ -35,18 +46,21 @@ class RankData extends Component
 
     public function calculate()
     {
-        $this->criteriaWeight = collect([
-            'biaya' => $this->priceCriteriaWeight,
-            'jarak' => $this->distanceCriteriaWeight,
-            'luas_kamar' => $this->roomSizeCriteriaWeight,
-            'fasilitas' => $this->facilityCriteriaWeight
-        ]);
+        $biaya = $this->priceCriteriaRange->find($this->selectedPriceCriteria);
+        $jarak = $this->distanceCriteriaRange->find($this->selectedDistanceCriteria);
+        $luas_kamar = $this->roomSizeCriteriaRange->find($this->selectedRoomSizeCriteria);
 
         // cost = biaya, jarak
         $this->kostMatrix = KostMatrix::with(['kost.category', 'kost.facility'])
             ->whereHas('kost.category', function ($query) {
                 $query->where('id', $this->selectedCategory);
-            })->get();
+            })
+            ->whereHas('kost', function ($query) use ($biaya, $jarak, $luas_kamar) {
+                $query->whereBetween('biaya', [$biaya->batas_bawah, $biaya->batas_atas])
+                    ->whereBetween('luas_kamar', [$luas_kamar->batas_bawah, $luas_kamar->batas_atas])
+                    ->whereBetween('jarak', [$jarak->batas_bawah, $jarak->batas_atas]);
+            })
+            ->get();
 
         $this->normalize();
     }
@@ -81,10 +95,10 @@ class RankData extends Component
         foreach ($this->kostMatrix as $index => $value) {
             $normalizationMatrix = $this->normalizationMatrix[$index];
 
-            $calculatedValue = $normalizationMatrix['biaya'] * $this->criteriaWeight['biaya'] +
-                $normalizationMatrix['jarak'] * $this->criteriaWeight['jarak'] +
-                $normalizationMatrix['luas_kamar'] * $this->criteriaWeight['luas_kamar'] +
-                $normalizationMatrix['fasilitas'] * $this->criteriaWeight['fasilitas'];
+            $calculatedValue = $normalizationMatrix['biaya'] * $this->priceCriteriaWeight +
+                $normalizationMatrix['jarak'] * $this->distanceCriteriaWeight +
+                $normalizationMatrix['luas_kamar'] * $this->roomSizeCriteriaWeight +
+                $normalizationMatrix['fasilitas'] * $this->facilityCriteriaWeight;
 
             $rankedData->push(collect($value)->put('nilai_perhitungan', $calculatedValue));
         }

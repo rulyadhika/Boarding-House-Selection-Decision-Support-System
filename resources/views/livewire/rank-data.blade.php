@@ -11,6 +11,32 @@
     <input type="text" wire:model.defer="roomSizeCriteriaWeight" placeholder="luas kamar">
     <input type="text" wire:model.defer="facilityCriteriaWeight" placeholder="fasilitas">
 
+    <div style="display: blodk">
+        <select wire:model.defer="selectedPriceCriteria">
+            <option value="-">-- Pilih Range Harga --</option>
+            @foreach ($priceCriteriaRange as $priceRange)
+                <option value="{{ $priceRange->id }}">
+                    {{ $priceRange->batas_bawah . ' s/d ' . $priceRange->batas_atas }}</option>
+            @endforeach
+        </select>
+
+        <select wire:model.defer="selectedDistanceCriteria">
+            <option value="-">-- Pilih Range Jarak --</option>
+            @foreach ($distanceCriteriaRange as $distanceRange)
+                <option value="{{ $distanceRange->id }}">
+                    {{ $distanceRange->batas_bawah . ' s/d ' . $distanceRange->batas_atas }}</option>
+            @endforeach
+        </select>
+
+        <select wire:model.defer="selectedRoomSizeCriteria">
+            <option value="-">-- Pilih Range Luas Kamar --</option>
+            @foreach ($roomSizeCriteriaRange as $roomSizeRange)
+                <option value="{{ $roomSizeRange->id }}">
+                    {{ $roomSizeRange->batas_bawah . ' s/d ' . $roomSizeRange->batas_atas }}</option>
+            @endforeach
+        </select>
+    </div>
+
     <button wire:click="calculate">proses</button>
 
     <table width="100%">

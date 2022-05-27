@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Livewire\RankData;
+use App\Http\Livewire\Backend\Dashboard;
+use App\Http\Livewire\Frontend\RankData;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,5 +19,8 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
+Route::group(['prefix' => 'admin'], function () {
+    Route::get('/', Dashboard::class);
+});
 
 Route::get('/', RankData::class);

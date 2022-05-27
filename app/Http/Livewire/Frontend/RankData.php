@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Http\Livewire\Frontend;
 
 use App\Models\CriteriaDistance;
 use App\Models\CriteriaPrice;
 use App\Models\CriteriaRoomSize;
-use App\Models\Kost;
 use App\Models\KostCategory;
 use App\Models\KostMatrix;
 use Livewire\Component;
@@ -41,7 +40,7 @@ class RankData extends Component
 
     public function render()
     {
-        return view('livewire.rank-data');
+        return view('livewire.frontend.rank-data');
     }
 
     public function calculate()

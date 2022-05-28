@@ -25,10 +25,17 @@ class RankData extends Component
     public $selectedRoomSizeCriteria;
 
     public $selectedCategory;
-    public $priceCriteriaWeight;
-    public $distanceCriteriaWeight;
-    public $roomSizeCriteriaWeight;
-    public $facilityCriteriaWeight;
+    public $priceCriteriaWeight = 25;
+    public $distanceCriteriaWeight = 25;
+    public $roomSizeCriteriaWeight = 25;
+    public $facilityCriteriaWeight = 25;
+
+    protected $queryString = [
+        'selectedPriceCriteria' => ['except' => '', 'as' => 'price'],
+        'selectedDistanceCriteria' => ['except' => '', 'as' => 'distance'],
+        'selectedRoomSizeCriteria' => ['except' => '', 'as' => 'size'],
+        'selectedCategory' => ['except' => '', 'as' => 'category']
+    ];
 
     public function mount()
     {
@@ -36,6 +43,22 @@ class RankData extends Component
         $this->priceCriteriaRange = CriteriaPrice::all();
         $this->distanceCriteriaRange = CriteriaDistance::all();
         $this->roomSizeCriteriaRange = CriteriaRoomSize::all();
+
+        $biaya = $this->priceCriteriaRange->find($this->selectedPriceCriteria);
+        $jarak = $this->distanceCriteriaRange->find($this->selectedDistanceCriteria);
+        $luas_kamar = $this->roomSizeCriteriaRange->find($this->selectedRoomSizeCriteria);
+
+        $this->kostMatrix = KostMatrix::with(['kost.category', 'kost.facility'])
+            ->filter([
+                'category' => $this->selectedCategory,
+                'biaya' => $biaya,
+                'jarak' => $jarak,
+                'luas_kamar' => $luas_kamar
+            ])->whereHas('kost', function ($query) {
+                $query->where('status', 'ditampilkan');
+            })->get();
+
+        $this->normalize();
     }
 
     public function render()
@@ -45,21 +68,26 @@ class RankData extends Component
 
     public function calculate()
     {
+        $totalPersentaseBobot = $this->priceCriteriaWeight + $this->distanceCriteriaWeight + $this->roomSizeCriteriaWeight + $this->facilityCriteriaWeight;
+
+        if ($totalPersentaseBobot > 100) {
+            return $this->addError('persentaseBobot', 'Total persentase bobot tidak boleh melebihi 100%');
+        }
+
         $biaya = $this->priceCriteriaRange->find($this->selectedPriceCriteria);
         $jarak = $this->distanceCriteriaRange->find($this->selectedDistanceCriteria);
         $luas_kamar = $this->roomSizeCriteriaRange->find($this->selectedRoomSizeCriteria);
 
         // cost = biaya, jarak
         $this->kostMatrix = KostMatrix::with(['kost.category', 'kost.facility'])
-            ->whereHas('kost.category', function ($query) {
-                $query->where('id', $this->selectedCategory);
-            })
-            ->whereHas('kost', function ($query) use ($biaya, $jarak, $luas_kamar) {
-                $query->whereBetween('biaya', [$biaya->batas_bawah, $biaya->batas_atas])
-                    ->whereBetween('luas_kamar', [$luas_kamar->batas_bawah, $luas_kamar->batas_atas])
-                    ->whereBetween('jarak', [$jarak->batas_bawah, $jarak->batas_atas]);
-            })
-            ->get();
+            ->filter([
+                'category' => $this->selectedCategory,
+                'biaya' => $biaya,
+                'jarak' => $jarak,
+                'luas_kamar' => $luas_kamar
+            ])->whereHas('kost', function ($query) {
+                $query->where('status', 'ditampilkan');
+            })->get();
 
         $this->normalize();
     }
@@ -99,7 +127,7 @@ class RankData extends Component
                 $normalizationMatrix['luas_kamar'] * $this->roomSizeCriteriaWeight +
                 $normalizationMatrix['fasilitas'] * $this->facilityCriteriaWeight;
 
-            $rankedData->push(collect($value)->put('nilai_perhitungan', $calculatedValue));
+            $rankedData->push(collect($value)->put('nilai_perhitungan', round($calculatedValue, 2)));
         }
 
         $this->rankedData = $rankedData;

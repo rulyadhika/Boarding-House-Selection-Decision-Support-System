@@ -20,9 +20,11 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
+Route::redirect('/','/kost');
+
 Route::group(['prefix' => 'admin'], function () {
     Route::get('/', Dashboard::class);
     Route::get('/kost', Kost::class)->name('admin.kost');
 });
 
-Route::get('/', RankData::class);
+Route::get('/kost', RankData::class);

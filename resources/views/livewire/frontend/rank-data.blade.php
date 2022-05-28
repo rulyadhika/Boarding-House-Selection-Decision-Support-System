@@ -126,7 +126,7 @@
         </div>
         <div class="col-lg-8">
             @if (count($rankedData) > 0)
-                @foreach ($rankedData as $data)
+                @foreach ($rankedData->sortByDesc('nilai_perhitungan') as $data)
                     <div class="card mb-3 kost-card">
                         <div class="row g-0">
                             <div class="col-md-4">

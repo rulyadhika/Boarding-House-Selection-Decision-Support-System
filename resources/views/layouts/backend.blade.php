@@ -28,6 +28,15 @@
 
     <link rel="icon" href="{{ asset('src/images/logoKosonganOCH.png') }}" />
 
+    <style>
+        .ellipsis {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+    </style>
+
     @livewireStyles
 
     @stack('pageStyle')

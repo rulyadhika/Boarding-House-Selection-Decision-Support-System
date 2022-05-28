@@ -23,6 +23,7 @@
                                     <th>Biaya</th>
                                     <th>Jarak</th>
                                     <th>Luas</th>
+                                    <th>Fasilitas</th>
                                     <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -42,9 +43,10 @@
                                         </td>
                                         <td>{{ $data->nama_kost }}</td>
                                         <td>{{ $data->category->nama_kategori }}</td>
-                                        <td>{{ $data->biaya }}</td>
-                                        <td>{{ $data->jarak }}</td>
-                                        <td>{{ $data->luas_kamar }}</td>
+                                        <td>Rp. {{ $data->biaya }}</td>
+                                        <td>{{ $data->jarak }} m</td>
+                                        <td>{{ $data->luas_kamar }} m<sup>2</sup></td>
+                                        <td class="ellipsis" style="max-width: 120px;" title="{{ $data->facility->nama_kriteria }}">{{ $data->facility->nama_kriteria }}</td>
                                         <td class="text-{{ $data->status == 'ditampilkan' ? 'success' : 'danger' }}">
                                             {{ Str::headline($data->status) }}</td>
                                         <td>
@@ -154,6 +156,21 @@
                                 <textarea type="text" class="form-control @error('alamatKost') is-invalid @enderror" id="alamatKost"
                                     wire:model.defer="alamatKost"></textarea>
                                 @error('alamatKost')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label for="fasilitasKost">Fasilitas</label>
+                                <select id="fasilitasKost" class="form-control @error('fasilitasKost') is-invalid @enderror"
+                                    wire:model.defer="fasilitasKost">
+                                    <option value="">-- Pilih Fasilitas --</option>
+                                    @foreach ($facilityCriteria as $facility)
+                                        <option value="{{ $facility->id }}">{{ $facility->nama_kriteria }}</option>
+                                    @endforeach
+                                </select>
+                                @error('fasilitasKost')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>

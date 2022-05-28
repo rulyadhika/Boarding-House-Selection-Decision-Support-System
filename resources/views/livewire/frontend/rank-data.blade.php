@@ -126,7 +126,7 @@
         </div>
         <div class="col-lg-8">
             @if (count($rankedData) > 0)
-                @foreach ($rankedData->sortByDesc('nilai_perhitungan') as $data)
+                @foreach ($rankedData as $data)
                     <div class="card mb-3 kost-card">
                         <div class="row g-0">
                             <div class="col-md-4">
@@ -171,6 +171,10 @@
                         </div>
                     </div>
                 @endforeach
+
+                {{-- <div class="d-flex justify-content-end">
+                    {{ $rankedData->links() }}
+                </div> --}}
             @else
             <div class="p-3 border rounded text-center">
                 <p class="mb-0">Kost yang memiliki kriteria seperti yang kamu cari tidak ditemukan. Coba ubah filter dan coba kembali</p>

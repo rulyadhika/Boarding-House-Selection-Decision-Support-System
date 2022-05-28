@@ -12,10 +12,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 class Kost extends Component
 {
     use WithFileUploads;
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
 
     public $title;
     public $kostCategories = [];
@@ -57,11 +61,10 @@ class Kost extends Component
         $this->kostCategories = KostCategory::all();
     }
 
-    public function render(Request $request)
+    public function render()
     {
         $data = [
             'dataKost' => ModelsKost::with('category')->orderBy('created_at', 'DESC')->paginate($this->amountData),
-            'page' => $request->page ?: 1
         ];
 
         return view('livewire.backend.kost', $data)->layout('layouts.backend');

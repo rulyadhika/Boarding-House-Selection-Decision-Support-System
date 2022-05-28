@@ -18,7 +18,6 @@ class Kost extends Component
     use WithFileUploads;
 
     public $title;
-    protected $dataKost = [];
     public $kostCategories = [];
     public $thumbnail = 'default.jpg';
     public $amountData = 10;
@@ -55,16 +54,14 @@ class Kost extends Component
     public function mount()
     {
         $this->title = 'Kelola Kost';
-
-        $this->dataKost = ModelsKost::with('category')->orderBy('created_at', 'DESC')->paginate($this->amountData);
         $this->kostCategories = KostCategory::all();
     }
 
     public function render(Request $request)
     {
         $data = [
-            'dataKost' => $this->dataKost,
-            'page' => $request->page ?: 0
+            'dataKost' => ModelsKost::with('category')->orderBy('created_at', 'DESC')->paginate($this->amountData),
+            'page' => $request->page ?: 1
         ];
 
         return view('livewire.backend.kost', $data)->layout('layouts.backend');
@@ -96,6 +93,10 @@ class Kost extends Component
         $this->rules['fotoKost'] = 'required|' . $this->rules['fotoKost'];
         $validatedData = $this->validationInputKost();
 
+        if($validatedData['error']){
+            return;
+        }
+
         $photoName = uniqid() . '.' .  $this->fotoKost->extension();
 
         // move image to temp file
@@ -121,8 +122,6 @@ class Kost extends Component
             'fasilitas' => 3,
         ]);
 
-        $this->dataKost = ModelsKost::with('category')->orderBy('created_at', 'DESC')->paginate($this->amountData);
-
         $this->resetKostInput();
 
         $this->emit('dataKostModified', ['message' => 'Data kost berhasil ditambahkan']);
@@ -133,6 +132,10 @@ class Kost extends Component
         $this->rules['fotoKost'] = 'nullable|' . $this->rules['fotoKost'];
 
         $validatedData = $this->validationInputKost();
+
+        if($validatedData['error']){
+            return;
+        }
 
         $kost = ModelsKost::find($this->idKost);
 
@@ -167,8 +170,6 @@ class Kost extends Component
             'fasilitas' => 3,
         ]);
 
-        $this->dataKost = ModelsKost::with('category')->orderBy('created_at', 'DESC')->paginate($this->amountData);
-
         $this->resetKostInput();
 
         $this->emit('dataKostModified', ['message' => 'Data kost berhasil diperbarui']);
@@ -176,15 +177,13 @@ class Kost extends Component
 
     public function deleteKostData($kostId)
     {
-        $kost = ModelsKost::find($kostId);
+        $kost = ModelsKost::where('id', $kostId)->first();
 
         if (Storage::disk('public')->exists('src/images/kost/' . $kost->thumbnail)) {
             Storage::disk('public')->delete('src/images/kost/' . $kost->thumbnail);
         }
 
         $kost->delete();
-
-        $this->dataKost = ModelsKost::with('category')->orderBy('created_at', 'DESC')->paginate($this->amountData);
 
         $this->emit('dataKostModified', ['message' => 'Data kost berhasil dihapus']);
     }
@@ -203,17 +202,23 @@ class Kost extends Component
         $luas_kamar = optional(CriteriaRoomSize::where('batas_bawah', '<', $this->luasKamarKost)->where('batas_atas', '>=', $this->luasKamarKost)->first())->bobot;
 
         if ($biaya == null) {
-            return $this->addError('biayaKost', 'Biaya ini tidak masuk dalam bobot kriteria apapun. Silahkan cek kembali!');
+            $this->addError('biayaKost', 'Biaya ini tidak masuk dalam bobot kriteria apapun. Silahkan cek kembali!');
         }
 
         if ($jarak == null) {
-            return $this->addError('jarakKost', 'Jarak ini tidak masuk dalam bobot kriteria apapun. Silahkan cek kembali!');
+            $this->addError('jarakKost', 'Jarak ini tidak masuk dalam bobot kriteria apapun. Silahkan cek kembali!');
         }
 
         if ($luas_kamar == null) {
-            return $this->addError('luasKamarKost', 'Luas kamar ini tidak masuk dalam bobot kriteria apapun. Silahkan cek kembali!');
+            $this->addError('luasKamarKost', 'Luas kamar ini tidak masuk dalam bobot kriteria apapun. Silahkan cek kembali!');
         }
 
-        return ['biaya' => $biaya, 'jarak' => $jarak, 'luas_kamar' => $luas_kamar];
+        $error = false;
+
+        if ($biaya == null || $jarak == null || $luas_kamar == null) {
+            $error = true;
+        }
+
+        return ['biaya' => $biaya, 'jarak' => $jarak, 'luas_kamar' => $luas_kamar, 'error' => $error];
     }
 }

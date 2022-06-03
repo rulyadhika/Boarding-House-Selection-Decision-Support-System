@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Livewire\Auth\Login;
 use App\Http\Livewire\Backend\Dashboard;
 use App\Http\Livewire\Backend\Kost;
 use App\Http\Livewire\Frontend\ExploreKost;
@@ -20,11 +22,18 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::redirect('/','/kost');
+Route::redirect('/', '/kost');
+Route::get('/kost', ExploreKost::class)->name('explore-kost');
 
-Route::group(['prefix' => 'admin'], function () {
-    Route::get('/', Dashboard::class);
-    Route::get('/kost', Kost::class)->name('admin.kost');
+Route::group(['middleware' => 'auth'], function () {
+    Route::group(['prefix' => 'admin'], function () {
+        Route::get('/', Dashboard::class);
+        Route::get('/kost', Kost::class)->name('admin.kost');
+    });
+
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
-Route::get('/kost', ExploreKost::class)->name('explore-kost');
+
+Route::get('/login', Login::class)->name('login')->middleware('guest');
+

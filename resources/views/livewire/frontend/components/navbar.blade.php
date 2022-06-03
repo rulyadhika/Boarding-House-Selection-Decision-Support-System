@@ -11,14 +11,24 @@
                     <a class="nav-link" aria-current="page" href="/">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('kost')?'active':'' }}" href="{{ route('explore-kost') }}">Cari Kost</a>
+                    <a class="nav-link {{ request()->is('kost') ? 'active' : '' }}"
+                        href="{{ route('explore-kost') }}">Cari Kost</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">About</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Login</a>
-                </li>
+                @if (auth()->check())
+                    <div class="nav-item">
+                        <form action="{{ route('logout') }}" method="POST" id="logoutForm">
+                            @csrf
+                            <a class="nav-link" href="#" onclick="document.querySelector('#logoutForm').submit();">Logout</a>
+                        </form>
+                    </div>
+                @else
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('login') }}">Login</a>
+                    </li>
+                @endif
             </ul>
         </div>
     </div>

@@ -114,11 +114,19 @@
                     <label for="rangeHarga" class="form-label">Range Harga</label>
                     <select wire:model.defer="selectedPriceCriteria" class="form-select" id="rangeHarga">
                         <option value="">-- Pilih Range Harga --</option>
-                        @foreach ($priceCriteriaRange as $priceRange)
-                            <option value="{{ $priceRange->id }}">
-                                {{ 'Rp. ' . $priceRange->batas_bawah . ' s/d ' . 'Rp. ' . $priceRange->batas_atas }}
-                            </option>
+                        <option value="{{ $priceCriteriaRange[0]->id }}">
+                            {{ 'Kurang dari Rp. ' . $priceCriteriaRange[0]->batas_atas }}
+                        </option>
+                        @foreach ($priceCriteriaRange as $count => $priceRange)
+                            @if($count != 0 && $count != (count($priceCriteriaRange) - 1) )
+                                <option value="{{ $priceRange->id }}">
+                                    {{ 'Rp. ' . $priceRange->batas_bawah . ' s/d ' . 'Rp. ' . $priceRange->batas_atas }}
+                                </option>
+                            @endif
                         @endforeach
+                        <option value="{{ $priceCriteriaRange[count($priceCriteriaRange)-1]->id }}">
+                            {{ 'Lebih dari Rp. ' . $priceCriteriaRange[count($priceCriteriaRange)-1]->batas_bawah }}
+                        </option>
                     </select>
                 </div>
 
@@ -126,11 +134,19 @@
                     <label for="rangeJarak" class="form-label">Range Jarak</label>
                     <select wire:model.defer="selectedDistanceCriteria" class="form-select" id="rangeJarak">
                         <option value="">-- Pilih Range Jarak --</option>
-                        @foreach ($distanceCriteriaRange as $distanceRange)
-                            <option value="{{ $distanceRange->id }}">
-                                {{ $distanceRange->batas_bawah . ' m' . ' s/d ' . $distanceRange->batas_atas . ' m' }}
-                            </option>
+                        <option value="{{ $distanceCriteriaRange[0]->id }}">
+                            {{ 'Kurang dari ' . $distanceCriteriaRange[0]->batas_atas . ' m' }}
+                        </option>
+                        @foreach ($distanceCriteriaRange as $count => $distanceRange)
+                            @if($count != 0 && $count != (count($distanceCriteriaRange) - 1) )
+                                <option value="{{ $distanceRange->id }}">
+                                    {{ $distanceRange->batas_bawah . ' m' . ' s/d ' . $distanceRange->batas_atas . ' m' }}
+                                </option>
+                            @endif
                         @endforeach
+                        <option value="{{ $distanceCriteriaRange[count($distanceCriteriaRange)-1]->id }}">
+                            {{ 'Lebih dari ' . $distanceCriteriaRange[count($distanceCriteriaRange)-1]->batas_bawah . ' m' }}
+                        </option>
                     </select>
                 </div>
 

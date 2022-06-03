@@ -69,28 +69,28 @@ class DatabaseSeeder extends Seeder
 
         CriteriaDistance::insert([
             [
-                'batas_atas' => 100,
+                'batas_atas' => 500,
                 'batas_bawah' => 0,
                 'bobot' => 1,
             ],
             [
-                'batas_atas' => 250,
-                'batas_bawah' => 100,
+                'batas_atas' => 1000,
+                'batas_bawah' => 500,
                 'bobot' => 2,
             ],
             [
-                'batas_atas' => 500,
-                'batas_bawah' => 250,
+                'batas_atas' => 3000,
+                'batas_bawah' => 1000,
                 'bobot' => 3,
             ],
             [
-                'batas_atas' => 1000,
-                'batas_bawah' => 500,
+                'batas_atas' => 5000,
+                'batas_bawah' => 3000,
                 'bobot' => 4,
             ],
             [
-                'batas_atas' => 5000,
-                'batas_bawah' => 1000,
+                'batas_atas' => 10000,
+                'batas_bawah' => 5000,
                 'bobot' => 5,
             ],
         ]);
@@ -146,6 +146,7 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
+	/*
         for ($i = 0; $i < 20; $i++) {
             $kost = Kost::factory()->create();
 
@@ -156,6 +157,6 @@ class DatabaseSeeder extends Seeder
                 'luas_kamar' => CriteriaRoomSize::where('batas_bawah','<',$kost->luas_kamar)->where('batas_atas','>=',$kost->luas_kamar)->first()->bobot,
                 'fasilitas' => CriteriaFacility::find($kost->kriteria_fasilitas)->bobot,
             ]);
-        }
+        }*/
     }
 }

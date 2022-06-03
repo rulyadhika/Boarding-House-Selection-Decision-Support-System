@@ -18,12 +18,25 @@
                     <a class="nav-link" href="#">About</a>
                 </li>
                 @if (auth()->check())
-                    <div class="nav-item">
-                        <form action="{{ route('logout') }}" method="POST" id="logoutForm">
-                            @csrf
-                            <a class="nav-link" href="#" onclick="document.querySelector('#logoutForm').submit();">Logout</a>
-                        </form>
-                    </div>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Akun
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('admin.kost') }}">Dashboard</a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form action="{{ route('logout') }}" method="POST" id="logoutForm">
+                                    @csrf
+                                    <a class="dropdown-item" href="#"
+                                        onclick="document.querySelector('#logoutForm').submit();">Logout</a>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
                 @else
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('login') }}">Login</a>

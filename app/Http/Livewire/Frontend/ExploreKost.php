@@ -9,8 +9,10 @@ use App\Models\KostCategory;
 use App\Models\KostMatrix;
 use Livewire\Component;
 
-class RankData extends Component
+class ExploreKost extends Component
 {
+    public $title = "Cari Kost";
+
     public $kostMatrix;
     public $categories;
     public $priceCriteriaRange;
@@ -18,7 +20,7 @@ class RankData extends Component
     public $roomSizeCriteriaRange;
 
     public $normalizationMatrix;
-    public $rankedData = [];
+    protected $rankedData = [];
 
     public $selectedPriceCriteria;
     public $selectedDistanceCriteria;
@@ -29,13 +31,20 @@ class RankData extends Component
     public $distanceCriteriaWeight = 25;
     public $roomSizeCriteriaWeight = 25;
     public $facilityCriteriaWeight = 25;
+    public $page;
 
     protected $queryString = [
+        'page' => ['except' => 1],
         'selectedPriceCriteria' => ['except' => '', 'as' => 'price'],
         'selectedDistanceCriteria' => ['except' => '', 'as' => 'distance'],
         'selectedRoomSizeCriteria' => ['except' => '', 'as' => 'size'],
         'selectedCategory' => ['except' => '', 'as' => 'category']
     ];
+
+    public function updated()
+    {
+        $this->reset('page');
+    }
 
     public function mount()
     {
@@ -63,7 +72,11 @@ class RankData extends Component
 
     public function render()
     {
-        return view('livewire.frontend.rank-data');
+        $data = [
+            'rankedData' => $this->rankedData
+        ];
+
+        return view('livewire.frontend.explore-kost', $data);
     }
 
     public function calculate()
@@ -130,6 +143,6 @@ class RankData extends Component
             $rankedData->push(collect($value)->put('nilai_perhitungan', round($calculatedValue, 2)));
         }
 
-        $this->rankedData = $rankedData;
+        $this->rankedData = $rankedData->paginate(5);
     }
 }

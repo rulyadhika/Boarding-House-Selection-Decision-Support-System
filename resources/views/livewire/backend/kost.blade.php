@@ -41,12 +41,12 @@
                                                     class="img-fluid" alt="">
                                             @endif
                                         </td>
-                                        <td>{{ $data->nama_kost }}</td>
+                                        <td class="ellipsis" style="max-width: 150px;" title="{{ $data->nama_kost }}">{{ $data->nama_kost }}</td>
                                         <td>{{ $data->category->nama_kategori }}</td>
                                         <td>Rp. {{ $data->biaya }}</td>
                                         <td>{{ $data->jarak }} m</td>
                                         <td>{{ $data->luas_kamar }} m<sup>2</sup></td>
-                                        <td class="ellipsis" style="max-width: 120px;" title="{{ $data->facility->nama_kriteria }}">{{ $data->facility->nama_kriteria }}</td>
+                                        <td class="ellipsis" style="max-width: 100px;" title="{{ $data->facility->nama_kriteria }}">{{ $data->facility->nama_kriteria }}</td>
                                         <td class="text-{{ $data->status == 'ditampilkan' ? 'success' : 'danger' }}">
                                             {{ Str::headline($data->status) }}</td>
                                         <td>

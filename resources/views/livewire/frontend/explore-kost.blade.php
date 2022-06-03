@@ -5,10 +5,36 @@
             object-fit: cover;
         }
 
+        .pagination>li>a {
+            background-color: white;
+            color: #464646;
+        }
+
+        .pagination>li>a:focus,
+        .pagination>li>a:hover,
+        .pagination>li>span:focus,
+        .pagination>li>span:hover {
+            color: #464646;
+            background-color: #eee;
+            border-color: #ddd;
+        }
+
+        .pagination>.active>span {
+            color: white;
+            background-color: #464646 !important;
+            border: solid 1px #464646 !important;
+        }
+
+        .pagination>.active>span:hover {
+            color: white;
+            background-color: #464646 !important;
+        }
+
     </style>
 @endpush
 
 <div class="container">
+    <x-slot name="title">{{ $title }}</x-slot>
 
     <h5 class="text-center mb-5">Cari Kost Yang Sesuai Dengan Kriteriamu</h5>
 
@@ -27,7 +53,8 @@
                     <label for="harga" class="col-sm-5 col-form-label">Harga</label>
                     <div class="col-sm-7">
                         <div class="input-group">
-                            <input type="number" class="form-control @error('persentaseBobot') is-invalid @enderror" id="harga" wire:model.defer="priceCriteriaWeight">
+                            <input type="number" class="form-control @error('persentaseBobot') is-invalid @enderror"
+                                id="harga" wire:model.defer="priceCriteriaWeight">
                             <span class="input-group-text" id="basic-addon1">%</span>
                         </div>
                     </div>
@@ -37,8 +64,8 @@
                     <label for="jarak" class="col-sm-5 col-form-label">Jarak</label>
                     <div class="col-sm-7">
                         <div class="input-group">
-                            <input type="number" wire:model.defer="distanceCriteriaWeight" class="form-control @error('persentaseBobot') is-invalid @enderror"
-                                id="jarak">
+                            <input type="number" wire:model.defer="distanceCriteriaWeight"
+                                class="form-control @error('persentaseBobot') is-invalid @enderror" id="jarak">
                             <span class="input-group-text" id="basic-addon1">%</span>
                         </div>
                     </div>
@@ -48,8 +75,8 @@
                     <label for="luas_kamar" class="col-sm-5 col-form-label">Luas Kamar</label>
                     <div class="col-sm-7">
                         <div class="input-group">
-                            <input type="number" wire:model.defer="roomSizeCriteriaWeight" class="form-control @error('persentaseBobot') is-invalid @enderror"
-                                id="luas_kamar">
+                            <input type="number" wire:model.defer="roomSizeCriteriaWeight"
+                                class="form-control @error('persentaseBobot') is-invalid @enderror" id="luas_kamar">
                             <span class="input-group-text" id="basic-addon1">%</span>
                         </div>
                     </div>
@@ -59,8 +86,8 @@
                     <label for="fasilitas" class="col-sm-5 col-form-label">Fasilitas</label>
                     <div class="col-sm-7">
                         <div class="input-group">
-                            <input type="number" wire:model.defer="facilityCriteriaWeight" class="form-control @error('persentaseBobot') is-invalid @enderror"
-                                id="fasilitas">
+                            <input type="number" wire:model.defer="facilityCriteriaWeight"
+                                class="form-control @error('persentaseBobot') is-invalid @enderror" id="fasilitas">
                             <span class="input-group-text" id="basic-addon1">%</span>
                         </div>
                     </div>
@@ -89,7 +116,8 @@
                         <option value="">-- Pilih Range Harga --</option>
                         @foreach ($priceCriteriaRange as $priceRange)
                             <option value="{{ $priceRange->id }}">
-                                {{ 'Rp. '.$priceRange->batas_bawah . ' s/d ' . 'Rp. '.$priceRange->batas_atas }}</option>
+                                {{ 'Rp. ' . $priceRange->batas_bawah . ' s/d ' . 'Rp. ' . $priceRange->batas_atas }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -100,7 +128,8 @@
                         <option value="">-- Pilih Range Jarak --</option>
                         @foreach ($distanceCriteriaRange as $distanceRange)
                             <option value="{{ $distanceRange->id }}">
-                                {{ $distanceRange->batas_bawah .' m' . ' s/d ' . $distanceRange->batas_atas.' m' }}</option>
+                                {{ $distanceRange->batas_bawah . ' m' . ' s/d ' . $distanceRange->batas_atas . ' m' }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -144,7 +173,8 @@
                                     </small>
 
                                     <small class="d-block mb-1">
-                                        <span class="fw-medium">Biaya : </span> Rp. {{ $data['kost']['biaya'] }}/bulan
+                                        <span class="fw-medium">Biaya : </span> Rp.
+                                        {{ $data['kost']['biaya'] }}/bulan
                                     </small>
 
                                     <small class="d-block mb-1">
@@ -172,13 +202,14 @@
                     </div>
                 @endforeach
 
-                {{-- <div class="d-flex justify-content-end">
+                <div class="d-flex justify-content-end">
                     {{ $rankedData->links() }}
-                </div> --}}
+                </div>
             @else
-            <div class="p-3 border rounded text-center">
-                <p class="mb-0">Kost yang memiliki kriteria seperti yang kamu cari tidak ditemukan. Coba ubah filter dan coba kembali</p>
-            </div>
+                <div class="p-3 border rounded text-center">
+                    <p class="mb-0">Kost yang memiliki kriteria seperti yang kamu cari tidak ditemukan. Coba
+                        ubah filter dan coba kembali</p>
+                </div>
             @endif
         </div>
     </div>

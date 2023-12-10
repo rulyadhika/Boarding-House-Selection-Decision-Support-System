@@ -146,17 +146,17 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
-	/*
-        for ($i = 0; $i < 20; $i++) {
+
+        for ($i = 0; $i < 10; $i++) {
             $kost = Kost::factory()->create();
 
             KostMatrix::create([
                 'id_kost' => $kost->id,
-                'biaya' => CriteriaPrice::where('batas_bawah','<',$kost->biaya)->where('batas_atas','>=',$kost->biaya)->first()->bobot,
-                'jarak' => CriteriaDistance::where('batas_bawah','<',$kost->jarak)->where('batas_atas','>=',$kost->jarak)->first()->bobot,
-                'luas_kamar' => CriteriaRoomSize::where('batas_bawah','<',$kost->luas_kamar)->where('batas_atas','>=',$kost->luas_kamar)->first()->bobot,
+                'biaya' => CriteriaPrice::where('batas_bawah', '<', $kost->biaya)->where('batas_atas', '>=', $kost->biaya)->first()->bobot,
+                'jarak' => CriteriaDistance::where('batas_bawah', '<', $kost->jarak)->where('batas_atas', '>=', $kost->jarak)->first()->bobot,
+                'luas_kamar' => CriteriaRoomSize::where('batas_bawah', '<', $kost->luas_kamar)->where('batas_atas', '>=', $kost->luas_kamar)->first()->bobot,
                 'fasilitas' => CriteriaFacility::find($kost->kriteria_fasilitas)->bobot,
             ]);
-        }*/
+        }
     }
 }
